@@ -15,7 +15,7 @@ app.use(bodyParser.urlencoded({
 }));
 
 
-app.use('/', router);
+app.use('/twatt', router);
 
 
 app.listen(PORT, () => {

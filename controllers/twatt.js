@@ -31,9 +31,30 @@ module.exports = {
         );
     },
 
-    searchTweet(req,res){
+    getUserTimeline(req, res) {
         oauth.get(
-            `https://api.twitter.com/1.1/search/tweets.json?q=${req.body.search}`,
+            `https://api.twitter.com/1.1/statuses/user_timeline.json?screen_name=fadhilmch`,
+            process.env.TOKEN,
+            process.env.TOKEN_SECRET,
+            (err, data) => {
+                if (err) {
+                    return res.status(404).json({
+                        message: "Error get timeline data",
+                        err
+                    })
+                }
+                return res.status(200).json({
+                    message: "Get the home timeline data",
+                    data: JSON.parse(data)
+                })
+            }
+        );
+    },
+
+    searchTweet(req,res){
+        let searchItem = req.query.q;
+        oauth.get(
+            `https://api.twitter.com/1.1/search/tweets.json?q=${searchItem}`,
             process.env.TOKEN,
             process.env.TOKEN_SECRET,
             (err, data) => {
@@ -52,11 +73,12 @@ module.exports = {
     },
 
     postTweet(req,res){
+        let postedTweet = req.query.status;
         oauth.post(
             `https://api.twitter.com/1.1/statuses/update.json`,
             process.env.TOKEN,
             process.env.TOKEN_SECRET,
-            {status: req.body.update},
+            {status: postedTweet},
             (err, data) => {
                 if (err) {
                     return res.status(404).json({
